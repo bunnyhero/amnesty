@@ -13,6 +13,9 @@
 #include "CWidget.h"
 #include "WidgetUtilities.h"
 
+@interface SinglesController () <NSApplicationDelegate>
+@end
+
 @implementation SinglesController
 
 - (NSString *)windowNibName
