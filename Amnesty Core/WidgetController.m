@@ -46,6 +46,9 @@ void AssembleCss()
 	);
 };
 
+@interface WidgetController () <WebResourceLoadDelegate, WebFrameLoadDelegate, WebUIDelegate, WKUIDelegate>
+@end
+
 @implementation WidgetController
 
 - (id)init

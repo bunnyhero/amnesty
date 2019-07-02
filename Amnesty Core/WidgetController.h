@@ -15,7 +15,7 @@
 #endif
 
 @interface WidgetController : NSWindowController {
-    IBOutlet id webView;
+    IBOutlet WebView* webView;
 	WidgetWindow* theWindow;
 	
 	NSTimer* autoUpdate;
@@ -239,11 +239,6 @@ typedef enum {
 - (void)setProhibitsMainFrameScrolling:(BOOL)prohibits;
 @end
 
-enum {
-    NSWindowCollectionBehaviorDefault = 0,
-    NSWindowCollectionBehaviorCanJoinAllSpaces = 1 << 0,
-    NSWindowCollectionBehaviorMoveToActiveSpace = 1 << 1
-};
 
 @interface NSWindow (Private)
 - (void)setCollectionBehavior:(NSWindowCollectionBehavior)behavior;

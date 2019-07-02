@@ -49,6 +49,9 @@ enum {
 	menuGroup = -1000
 };
 
+@interface AppController () <NSApplicationDelegate>
+@end
+
 @implementation AppController
 
 - (id)init
