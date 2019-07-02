@@ -2,8 +2,8 @@
 // Prefix header for all source files of the 'Amnesty' target in the 'Amnesty' project
 //
 
-#define MAC_OS_X_VERSION_MIN_REQUIRED	MAC_OS_X_VERSION_10_3
-#define MAC_OS_X_VERSION_MAX_ALLOWED	MAC_OS_X_VERSION_10_4
+//#define MAC_OS_X_VERSION_MIN_REQUIRED    MAC_OS_X_VERSION_10_3
+//#define MAC_OS_X_VERSION_MAX_ALLOWED    MAC_OS_X_VERSION_10_4
 
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>

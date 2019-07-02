@@ -36,11 +36,11 @@
 	<key>CFBundleSignature</key>
 	<string>mDaM</string>
 	<key>CFBundleVersion</key>
-	<string>1.6</string>
+	<string>1.6.1</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.4</string>
+	<string>10.7</string>
 	<key>LSUIElement</key>
 	<string>1</string>
 	<key>NSMainNibFile</key>

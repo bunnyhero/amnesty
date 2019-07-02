@@ -32,11 +32,11 @@
 	<key>CFBundleSignature</key>
 	<string>mDaS</string>
 	<key>CFBundleVersion</key>
-	<string>1.6</string>
+	<string>1.6.1</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.3.9</string>
+	<string>10.7</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

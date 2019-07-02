@@ -1,17 +1,16 @@
 // IconFamily.h
 // IconFamily class interface
-// by Troy Stephens, Thomas Schnitzer, David Remahl, Nathan Day, Ben Haller, Sven Janssen, Peter Hosey, Conor Dearden, and Elliot Glaysher
-// version 0.9.2
+// by Troy Stephens, Thomas Schnitzer, David Remahl, Nathan Day, Ben Haller, Sven Janssen, Peter Hosey, Conor Dearden, Elliot Glaysher, Dave MacLachlan, and Sveinbjorn Thordarson
+// version 0.9.4
 //
 // Project Home Page:
-//   http://homepage.mac.com/troy_stephens/software/objects/IconFamily/
+//   http://iconfamily.sourceforge.net/
 //
-// Problems, shortcomings, and uncertainties that I'm aware of are flagged
-// with "NOTE:".  Please address bug reports, bug fixes, suggestions, etc.
-// to me at troy_stephens@mac.com
+// Problems, shortcomings, and uncertainties that I'm aware of are flagged with "NOTE:".  Please address bug reports, bug fixes, suggestions, etc. to the project Forums and bug tracker at https://sourceforge.net/projects/iconfamily/
 
 /*
-    Copyright (c) 2001-2006 Troy N. Stephens
+    Copyright (c) 2001-2010 Troy N. Stephens
+    Portions Copyright (c) 2007 Google Inc.
 
     Use and distribution of this source code is governed by the MIT License, whose terms are as follows.
 
@@ -28,7 +27,7 @@
 // This class is a Cocoa/Objective-C wrapper for the Mac OS X Carbon API's
 // "icon family" data type.  Its main purpose is to enable Cocoa applications
 // to easily create custom file icons from NSImage instances, and thus take
-// advantage of Mac OS X's new 128x128 RGBA "thumbnail" icon format to provide
+// advantage of Mac OS X's new larger RGBA "thumbnail" icon format to provide
 // richly detailed thumbnail previews of the files' contents.
 //
 // Using IconFamily, this becomes as simple as:
@@ -39,7 +38,15 @@
 // You can also write an icon family to an .icns file using the -writeToFile:
 // method.
 
-@interface IconFamily : NSObject
+enum {
+	kIconServices512RetinaPixelDataARGB = 'ic10', /* non-premultiplied 1024x1024 ARGB bitmap*/
+    kIconServices256RetinaPixelDataARGB = 'ic14', /* non-premultiplied 512x512 ARGB bitmap*/
+    kIconServices128RetinaPixelDataARGB = 'ic13', /* non-premultiplied 256x256 ARGB bitmap*/
+    kIconServices32RetinaPixelDataARGB  = 'ic12', /* non-premultiplied 64x64 ARGB bitmap*/
+    kIconServices16RetinaPixelDataARGB  = 'ic11'  /* non-premultiplied 32x32 ARGB bitmap*/
+};
+
+@interface IconFamily : NSObject <NSPasteboardReading, NSPasteboardWriting>
 {
     IconFamilyHandle hIconFamily;
 }
@@ -99,16 +106,18 @@
 // the elementType, the bitmapImageRep must also be non-planar and have 8 bits
 // per sample.
 //
-//  elementType           dimensions   format
-//  -------------------   ----------   ---------------------------------------
-//  kThumbnail32BitData    128 x 128   32-bit RGBA, 32-bit RGB, or 24-bit RGB
-//  kThumbnail8BitMask     128 x 128   32-bit RGBA or 8-bit intensity
-//  kLarge32BitData         32 x  32   32-bit RGBA, 32-bit RGB, or 24-bit RGB
-//  kLarge8BitMask          32 x  32   32-bit RGBA or 8-bit intensity
-//  kLarge1BitMask          32 x  32   32-bit RGBA, 8-bit intensity, or 1-bit
-//  kSmall32BitData         16 x  16   32-bit RGBA, 32-bit RGB, or 24-bit RGB
-//  kSmall8BitMask          16 x  16   32-bit RGBA or 8-bit intensity
-//  kSmall1BitMask          16 x  16   32-bit RGBA, 8-bit intensity, or 1-bit
+//  elementType                       dimensions   format
+//  -------------------               ----------   ---------------------------------------
+//  kIconServices512PixelDataARGB     512 x 512   32-bit RGBA, 32-bit RGB, or 24-bit RGB
+//  kIconServices256PixelDataARGB     256 x 256   32-bit RGBA, 32-bit RGB, or 24-bit RGB
+//  kThumbnail32BitData               128 x 128   32-bit RGBA, 32-bit RGB, or 24-bit RGB
+//  kThumbnail8BitMask                128 x 128   32-bit RGBA or 8-bit intensity
+//  kLarge32BitData                   32 x  32   32-bit RGBA, 32-bit RGB, or 24-bit RGB
+//  kLarge8BitMask                    32 x  32   32-bit RGBA or 8-bit intensity
+//  kLarge1BitMask                    32 x  32   32-bit RGBA, 8-bit intensity, or 1-bit
+//  kSmall32BitData                   16 x  16   32-bit RGBA, 32-bit RGB, or 24-bit RGB
+//  kSmall8BitMask                    16 x  16   32-bit RGBA or 8-bit intensity
+//  kSmall1BitMask                    16 x  16   32-bit RGBA, 8-bit intensity, or 1-bit
 //
 // When an RGBA image is supplied to set a "Mask" element, the mask data is
 // taken from the image's alpha channel.
@@ -129,6 +138,7 @@
 
 // Gets the image data for one of the icon family's elements as a new, 32-bit
 // RGBA NSBitmapImageRep.  The specified elementType should be one of
+// kIconServices512PixelDataARGB, kIconServices256PixelDataARGB,
 // kThumbnail32BitData, kLarge32BitData, or kSmall32BitData.
 //
 // The returned NSBitmapImageRep will have the corresponding 8-bit mask data
@@ -160,11 +170,13 @@
 
 - (BOOL) setAsCustomIconForFile:(NSString*)path;
 - (BOOL) setAsCustomIconForFile:(NSString*)path withCompatibility:(BOOL)compat;
+- (BOOL) setAsCustomIconForFile:(NSString*)path withCompatibility:(BOOL)compat error:(NSError **)error;
 
 // Same as the -setAsCustomIconForFile:... methods, but for folders (directories).
 
 - (BOOL) setAsCustomIconForDirectory:(NSString*)path;
 - (BOOL) setAsCustomIconForDirectory:(NSString*)path withCompatibility:(BOOL)compat;
+- (BOOL) setAsCustomIconForDirectory:(NSString*)path withCompatibility:(BOOL)compat error:(NSError **)error;
 
 // Removes the custom icon (if any) from the specified file's resource fork,
 // and clears the necessary Finder bits for the file.  (Note that this is a
@@ -172,5 +184,12 @@
 
 + (BOOL) removeCustomIconFromFile:(NSString*)path;
 
-@end
+//Same as the -removeCustomIconFromFile: method, but for folders (directories).
 
++ (BOOL) removeCustomIconFromDirectory:(NSString*)path;
++ (BOOL) removeCustomIconFromDirectory:(NSString*)path error:(NSError **)error;
+
+- (NSData *)data;
++ (BOOL)canInitWithPasteboard:(NSPasteboard *)pasteboard;
+
+@end
